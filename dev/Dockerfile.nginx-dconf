@@ -9,7 +9,8 @@ RUN mkdir -p /go/src/github.com/docker/ && \
     git checkout v18.09.6
 
 ENV     CGO_ENABLED=0 \
-        DISABLE_WARN_OUTSIDE_CONTAINER=1
+        DISABLE_WARN_OUTSIDE_CONTAINER=1 \
+        GO111MODULE=auto
 
 WORKDIR /go/src/github.com/docker/cli
 RUN     ./scripts/build/binary && strip ./build/docker
