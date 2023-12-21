@@ -9,6 +9,27 @@ networks:
     name: traefik
 
 services:
+  mariadb1011:
+    image: mariadb:10.11
+    command:
+      - "mysqld"
+      - "--sql_mode="
+      - "--innodb_buffer_pool_size=1G"
+      - "--innodb_log_file_size=256M"
+      - "--innodb_flush_log_at_trx_commit=1"
+      - "--innodb_flush_method=O_DIRECT"
+    environment: ["MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?please set mysql root password}"]
+    volumes: ["./data/mariadb1011/lib:/var/lib/mysql"]
+    networks:
+      - mysql
+    restart: unless-stopped
+    labels: ["traefik.enable=false"]
+    mem_limit: 4G
+    memswap_limit: 5G
+    ports: ["127.0.0.1:3311:3306"]
+    logging: {driver: json-file, options: {max-file: '30', max-size: 1024k}}
+    scale: ${SCALE_MYSQL:-1}
+
   mysql:
     image: mysql:5.7
     command:
