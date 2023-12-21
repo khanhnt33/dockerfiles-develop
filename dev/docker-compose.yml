@@ -9,6 +9,15 @@ networks:
     name: traefik
 
 services:
+  redis:
+    image: redis/redis-stack:6.2.2-v1
+    networks:
+      - mysql
+    restart: unless-stopped
+    labels: ["traefik.enable=false"]
+    ports: ["127.0.0.1:6379:6379", "127.0.0.1:8001:8001"]
+    command: [ redis-server, --maxmemory 128mb, --maxmemory-policy volatile-lru, --save "" ]
+
   mariadb1011:
     image: mariadb:10.11
     command:
